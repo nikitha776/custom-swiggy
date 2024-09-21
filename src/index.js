@@ -1,17 +1,54 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+import Header from './Components/Header'
+import Body from './Components/Body'
+import About from './Components/About'
+import Contact from './Components/Contact'
+import Error from './Components/Error'
+import RestaurantMenu from './Components/RestaurantMenu'
+import {createBrowserRouter,RouterProvider,Outlet} from "react-router-dom"
+import  Grocery from './Components/Grocery'
+import './style.css'
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
+const WebLayout = () => {
+  return (
+    <div className = "web">
+      <Header/>
+      <Outlet/>
+    </div>
+  );
+}
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+const root = ReactDOM.createRoot(document.getElementById("root"));;
+
+const appRouter = createBrowserRouter([
+  {
+    path : "/",
+    element : <WebLayout/>,
+    children : [
+      {
+        path: "/",
+        element: <Body/>
+      },
+      {
+        path: "/about",
+        element : <About/>
+      },
+      {
+        path: "/contact",
+        element: <Contact/>
+      },
+      {
+        path: "/grocery",
+        element: <Grocery/>
+      },
+      {
+        path: "/restaurant/:resId",
+        element: <RestaurantMenu/>
+      }
+    ],
+    errorElement : <Error/>
+  },
+])
+root.render(<RouterProvider router = {appRouter}/>);
+
