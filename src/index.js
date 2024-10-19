@@ -9,13 +9,32 @@ import RestaurantMenu from './Components/RestaurantMenu'
 import {createBrowserRouter,RouterProvider,Outlet} from "react-router-dom"
 import  Grocery from './Components/Grocery'
 import './style.css'
+import {useState, useEffect, useContext} from 'react'
+import UserContext from './Utils/UserContext'
+import Cart from './Components/Cart'
+import appStore from './Utils/appStore'
+import {Provider} from 'react-redux'
 
 const WebLayout = () => {
+
+  const [userName,setUserName] = useState("");
+
+  useEffect(() => {
+    const data = {
+      user : "Nikitha"
+    }
+    setUserName(data.user);
+  },[])
+
   return (
-    <div className = "web">
-      <Header/>
-      <Outlet/>
-    </div>
+    <Provider store = {appStore}>
+      <UserContext.Provider value = {{loggedInUser : userName, setUserName}}>
+        <div className = "web">
+          <Header/>
+          <Outlet/>
+        </div>
+      </UserContext.Provider>
+    </Provider>
   );
 }
 
@@ -41,6 +60,10 @@ const appRouter = createBrowserRouter([
       {
         path: "/grocery",
         element: <Grocery/>
+      },
+      {
+        path: "/cart",
+        element: <Cart/>
       },
       {
         path: "/restaurant/:resId",

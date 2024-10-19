@@ -1,14 +1,17 @@
-import Card from './Card'
-import {useState, useEffect} from 'react'
+import Card,{withStatus} from './Card'
+import {useState, useEffect, useContext} from 'react'
 import cardList from '../Utils/mockData'
 import Shimmer from './Shimmer'
 import useOnlineStatus from './useOnlineStatus'
 import {Link} from 'react-router-dom'
+import UserContext from '../Utils/UserContext'
 
 const Body = () => {
   const [list,setList] = useState([]);
   const [filteredList,setFilteredList] = useState([]);
   const [searchText,setSearchText] = useState("");
+  const WithStatusCard = withStatus(Card);
+  const {loggedInUser, setUserName} = useContext(UserContext);
 
 
   useEffect(() => {
@@ -18,7 +21,6 @@ const Body = () => {
   const fetchData = async () => {
     const data = await fetch("https://www.swiggy.com/dapi/restaurants/list/v5?lat=16.5061743&lng=80.6480153&is-seo-homepage-  enabled=true&page_type=DESKTOP_WEB_LISTING");
     const json = await data.json();
-    console.log(data);
     setList(json?.data?.cards[4]?.card?.card?.gridElements?.infoWithStyle?.restaurants);
     setFilteredList(json?.data?.cards[4]?.card?.card?.gridElements?.infoWithStyle?.restaurants);
   }
@@ -27,6 +29,7 @@ const Body = () => {
   if(onlineStatus == false) {
     return <h1>Looks like you're offline!! Please check your online connection.</h1>
   }
+
   
   return list.length === 0 ? <Shimmer/> : (
     <div className="body">
@@ -42,7 +45,8 @@ const Body = () => {
                 res.info.name.toLowerCase().includes(searchText.toLowerCase())
               );
               setFilteredList(filteredList);
-            }}>Search</button>
+            }}>Search
+          </button>
         </div>
         
         <button 
@@ -55,13 +59,20 @@ const Body = () => {
             setFilteredList(filteredList);
           }}>Top Rated Restaurants
         </button>
+
+        <div className = "search m-4 p-4">
+          <label>User : </label>
+          <input value = {loggedInUser} type = "text" className = "search border border-solid m-4" onChange = {(e) => setUserName(e.target.value)}></input>
+        </div>
         
       </div>
       
       <div className = "cardContainer flex flex-wrap">
         {
           filteredList.map((card) => (
-            <Link key = {card.info.id} to={"/restaurant/"+card.info.id}><Card cardInfo = {card}/></Link>
+            <Link key = {card.info.id} to={"/restaurant/"+card.info.id}>
+              {card.info.isOpen === true ? <WithStatusCard cardInfo = {card}/> : <Card cardInfo = {card}/>}
+            </Link>
           ))
         }
       </div>
