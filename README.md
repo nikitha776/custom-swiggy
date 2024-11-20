@@ -11,4 +11,5 @@ A custom implementation of Swiggy, containing top-rated restaurant data and menu
   - Implementing a search filter.
   - Styled it using  TailwindCSS
   - Added Shimmer UI for better experience
+  - Redux for State Management: Used Redux for managing the global state, especially for cart functionality, enabling adding, removing, and clearing items in the cart.
 
